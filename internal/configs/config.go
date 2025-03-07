@@ -40,7 +40,7 @@ func Init(opts ...Option) error {
 type Option func(*option)
 
 func getDefaultConfigFolders() []string {
-	return []string{"./configd"}
+	return []string{"./configs"}
 }
 
 func getDefaultConfigFile() string {
