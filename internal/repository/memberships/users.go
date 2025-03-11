@@ -9,12 +9,12 @@ import (
 
 func (r *repository) GetUser(ctx context.Context, email, username string) (*memberships.UserModel, error) {
 
-	query := "SELECT id, email, username FROM users WHERE email=? OR username=?"
+	query := "SELECT id, email, password, username FROM users WHERE email=? OR username=?"
 
 	row := r.db.QueryRowContext(ctx, query, email, username)
 
 	var response memberships.UserModel
-	err := row.Scan(&response.ID, &response.Email, &response.Username)
+	err := row.Scan(&response.ID, &response.Email, &response.Password, &response.Username)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, nil
