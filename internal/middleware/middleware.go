@@ -25,6 +25,7 @@ func AuthMiddleware() gin.HandlerFunc{
 		userID, username, err := jwt.ValidateToken(header, secretKey)
 		if err != nil {
 			c.AbortWithError(http.StatusUnauthorized, err)
+			return
 		}
 
 		c.Set("userID", userID)
