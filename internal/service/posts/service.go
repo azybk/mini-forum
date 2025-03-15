@@ -9,16 +9,17 @@ import (
 
 type postRepository interface {
 	CreatePost(ctx context.Context, model posts.PostModel) error
+	CreateComment(ctx context.Context, model posts.CommentModel) error
 }
 
 type service struct {
-	cfg *configs.Config
+	cfg      *configs.Config
 	postRepo postRepository
 }
 
-func NewService(cfg *configs.Config, postRepo postRepository) *service{
+func NewService(cfg *configs.Config, postRepo postRepository) *service {
 	return &service{
-		cfg: cfg,
+		cfg:      cfg,
 		postRepo: postRepo,
 	}
 }

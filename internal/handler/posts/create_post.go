@@ -13,7 +13,7 @@ func (h *Handler) CreatePost(c *gin.Context) {
 	var request posts.CreatePostRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"err": err.Error(),
+			"error": err.Error(),
 		})
 		return
 	}
@@ -21,8 +21,8 @@ func (h *Handler) CreatePost(c *gin.Context) {
 	userID := c.GetInt64("userID")
 	err := h.postSvc.CreatePost(ctx, userID, request)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H {
-			"err": err.Error(),
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
 		})
 		return
 	}
