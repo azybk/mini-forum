@@ -31,7 +31,7 @@ func (r *repository) GetAllPost(ctx context.Context, limit, offset int) (posts.G
 	data := make([]posts.Post, 0)
 	for rows.Next() {
 		var (
-			model posts.PostModel
+			model    posts.PostModel
 			username string
 		)
 		err = rows.Scan(&model.ID, &model.UserID, &username, &model.PostTitle, &model.PostContent, &model.PostHashtags)
@@ -41,11 +41,11 @@ func (r *repository) GetAllPost(ctx context.Context, limit, offset int) (posts.G
 		}
 
 		data = append(data, posts.Post{
-			ID : model.ID,
-			UserID: model.UserID,
-			Username: username,
-			PostTitle: model.PostTitle,
-			PostContent: model.PostContent,
+			ID:           model.ID,
+			UserID:       model.UserID,
+			Username:     username,
+			PostTitle:    model.PostTitle,
+			PostContent:  model.PostContent,
 			PostHashtags: strings.Split(model.PostHashtags, ","),
 		})
 	}
@@ -53,10 +53,36 @@ func (r *repository) GetAllPost(ctx context.Context, limit, offset int) (posts.G
 	response = posts.GetAllPostResponse{
 		Data: data,
 		Pagination: posts.Pagination{
-			Limit: limit,
+			Limit:  limit,
 			Offset: offset,
 		},
 	}
 
 	return response, nil
+}
+
+func (r *repository) GetPostByID(ctx context.Context, id int64) (*posts.Post, error) {
+	query := "SELECT p.id, p.user_id, u.username, p.post_title, p.post_content, p.post_hashtags, ua.is_liked FROM posts p JOIN users u ON p.user_id = u.id JOIN user_activities ua ON p.id = ua.post_id WHERE p.id=?"
+
+	var (
+		model    posts.PostModel
+		username string
+		isLiked  bool
+	)
+	row := r.db.QueryRowContext(ctx, query, id)
+	err := row.Scan(&model.ID, &model.UserID, &username, &model.PostTitle, &model.PostContent, &model.PostHashtags, &isLiked)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &posts.Post{
+		ID:           model.ID,
+		UserID:       model.UserID,
+		Username:     username,
+		PostTitle:    model.PostTitle,
+		PostContent:  model.PostContent,
+		PostHashtags: strings.Split(model.PostHashtags, ","),
+		IsLiked:      isLiked,
+	}, nil
 }

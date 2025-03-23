@@ -16,12 +16,12 @@ func (r *repository) GetUserActivity(ctx context.Context, model posts.UserActivi
 	err := row.Scan(&response.ID, &response.PostID, &response.UserID, &response.IsLiked, &response.CreatedAt, &response.UpdatedAt, &response.CreatedBy, &response.UpdatedBy)
 
 	if err != nil {
-		if err == sql.ErrNoRows {			
+		if err == sql.ErrNoRows {
 			return nil, nil
-		}		
+		}
 		return nil, err
 	}
-	
+
 	return &response, nil
 }
 
@@ -47,4 +47,19 @@ func (r *repository) UpdateUserActivity(ctx context.Context, model posts.UserAct
 	}
 
 	return nil
+}
+
+func (r *repository) CountLikeByPostID(ctx context.Context, postID int64) (int, error) {
+	query := "SELECT count(id) FROM user_activities WHERE post_id = ? AND is_liked = true"
+
+	var response int
+	row := r.db.QueryRowContext(ctx, query, postID)
+
+	err := row.Scan(&response)
+
+	if err != nil {
+		return response, err
+	}
+
+	return response, nil
 }
