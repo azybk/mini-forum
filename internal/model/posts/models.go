@@ -82,6 +82,9 @@ type (
 	}
 
 	Comment struct {
+		ID int64 `json:"id"`
+		UserID int64 `json:"user_id"`
+		Username string `json:"username"`
 		CommentContent string `json:"commentContent"`
 	}
 )
