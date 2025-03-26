@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"log"
+	"strconv"
 	"time"
 
 	"github.com/azybk/mini-forum/internal/model/memberships"
@@ -13,7 +14,7 @@ import (
 )
 
 func (s *service) Login(ctx context.Context, req memberships.LoginRequest) (string, string, error) {
-	user, err := s.membershipRepo.GetUser(ctx, req.Email, "")
+	user, err := s.membershipRepo.GetUser(ctx, req.Email, "", 0)
 	if err != nil {
 		log.Fatal("failed to get user")
 		return "", "", err
@@ -52,6 +53,10 @@ func (s *service) Login(ctx context.Context, req memberships.LoginRequest) (stri
 		UserID: user.ID,
 		RefreshToken: refreshToken,
 		ExpiredAt: time.Now().Add(10 * 24 * time.Hour),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		CreatedBy: strconv.FormatInt(user.ID, 10),
+		UpdatedBy: strconv.FormatInt(user.ID, 10),
 	})
 
 	if err != nil {
