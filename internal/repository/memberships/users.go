@@ -7,11 +7,11 @@ import (
 	"github.com/azybk/mini-forum/internal/model/memberships"
 )
 
-func (r *repository) GetUser(ctx context.Context, email, username string) (*memberships.UserModel, error) {
+func (r *repository) GetUser(ctx context.Context, email, username string, userID int64) (*memberships.UserModel, error) {
 
-	query := "SELECT id, email, password, username FROM users WHERE email=? OR username=?"
+	query := "SELECT id, email, password, username FROM users WHERE email=? OR username=? OR id = ?"
 
-	row := r.db.QueryRowContext(ctx, query, email, username)
+	row := r.db.QueryRowContext(ctx, query, email, username, userID)
 
 	var response memberships.UserModel
 	err := row.Scan(&response.ID, &response.Email, &response.Password, &response.Username)

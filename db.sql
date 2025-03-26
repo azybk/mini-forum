@@ -38,3 +38,15 @@ CREATE TABLE IF NOT EXISTS user_activities(
     CONSTRAINT fk_post_id_user_activities FOREIGN KEY (post_id) REFERENCES posts(id),
     CONSTRAINT fk_user_id_user_activities FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
+CREATE TABLE IF NOT EXISTS refresh_tokens(
+    id int AUTO_INCREMENT PRIMARY KEY,
+    user_id bigint NOT NUll,
+    refresh_token text NOT NULL,
+    expired_at timestamp NOT NULL,
+    created_at timestamp default current_timestamp,
+    updated_at timestamp default current_timestamp,
+    created_by text NOT NULL,
+    updated_by text NOT NULL,
+    CONSTRAINT fk_user_id_refresh_tokens FOREIGN KEY(user_id) REFERENCES users(id)
+);
